@@ -52,10 +52,10 @@ public class Robot extends IterativeRobot {
 	
 	Joystick joystick;
 	
-	AdvancedPIDController dControl;
-	AdvancedPIDController rControl; 
-	AdvancedPIDController leftControl;
-	AdvancedPIDController rightControl;
+	SnazzyPIDController dControl;
+	SnazzyPIDController rControl; 
+	SnazzyPIDController leftControl;
+	SnazzyPIDController rightControl;
 	
 	RotationPIDOutput rOutput;
 	DrivePIDOutput dOutput;
@@ -91,10 +91,10 @@ public class Robot extends IterativeRobot {
 		daPotatoSource = new AverageEncoderSource(this, l, r);
 		daGSource = new ADXRS450_Gyro();
 		
-		dControl = new AdvancedPIDController(0, 0, 0, daPotatoSource, dOutput, 0.01);
-		rControl = new AdvancedPIDController(0, 0, 0, daGSource, rOutput, 0.01);
-		leftControl = new AdvancedPIDController(1, 0, 0, l, tLeft, 0.01);
-		rightControl = new AdvancedPIDController(1, 0, 0, r, new InvertedPIDOutput(tRight), 0.01);
+		dControl = new SnazzyPIDController(0, 0, 0, daPotatoSource, dOutput, 0.01);
+		rControl = new SnazzyPIDController(0, 0, 0, daGSource, rOutput, 0.01);
+		leftControl = new SnazzyPIDController(1, 0, 0, 0, l, tLeft, 0.01, "Left.csv");
+		rightControl = new SnazzyPIDController(1, 0, 0, 0, r, new InvertedPIDOutput(tRight), 0.01,"Right.csv");
 		
 		//table = NetworkTable.getTable("GRIP/myContoursReport");
 		
@@ -141,6 +141,8 @@ public class Robot extends IterativeRobot {
 		sLeft.set(-joystick.getRawAxis(1));
 		tRight.set(joystick.getRawAxis(3));
 		sRight.set(joystick.getRawAxis(3));
+		
+		SmartDashboard.putString("Fred", "Flinstone");
 		
 		/*System.out.println("right: "+ r.get() + ", left: " + l.get());
 		getTableValues();
@@ -221,24 +223,25 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic(){
-		System.out.println(joystick.getRawButton(1));
 		if(joystick.getRawButton(1) && !toggle){
 			leftControl.setSetpoint(1000* IN_TO_ENC);
 			leftControl.enable();
-			leftControl.enableLog("Left.csv");
+			System.out.println(l.getDistance()*ENC_TO_IN);
+			//leftControl.enableLog("Left.csv");
 			
 			rightControl.setSetpoint(1000 * IN_TO_ENC);
 			rightControl.enable();
-			rightControl.enableLog("Right.csv");
+			System.out.println(r.getDistance()*ENC_TO_IN);
+			//rightControl.enableLog("Right.csv");
 			
 			toggle = true;
 			
 		} else if(!joystick.getRawButton(1) && toggle){
 			leftControl.disable();
-			leftControl.closeLog();
+			//leftControl.closeLog();
 			
 			rightControl.disable();
-			rightControl.closeLog();
+			//rightControl.closeLog();
 			
 			toggle = false;
 			

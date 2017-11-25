@@ -11,6 +11,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.TimerTask;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -67,6 +68,8 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   Timer m_setpointTimer;
   private boolean m_freed = false;
   private boolean m_usingPercentTolerance;
+  private SnazzyLog m_log;
+  private String m_file = null;
 
   /**
    * Tolerance is the type of tolerance used to specify if the PID controller is on target.
@@ -146,7 +149,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
    */
   @SuppressWarnings("ParameterName")
   public SnazzyPIDController(double Kp, double Ki, double Kd, double Kf, PIDSource source,
-                       PIDOutput output, double period) {
+                       PIDOutput output, double period, String fname) {
 
     if (source == null) {
       throw new NullPointerException("Null PIDSource was given");
@@ -163,6 +166,8 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
     m_I = Ki;
     m_D = Kd;
     m_F = Kf;
+    
+    m_file = fname;
 
     m_pidInput = source;
     m_pidOutput = output;
@@ -191,7 +196,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @SuppressWarnings("ParameterName")
   public SnazzyPIDController(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output,
                        double period) {
-    this(Kp, Ki, Kd, 0.0, source, output, period);
+    this(Kp, Ki, Kd, 0.0, source, output, period, null);
   }
 
   /**
@@ -221,7 +226,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @SuppressWarnings("ParameterName")
   public SnazzyPIDController(double Kp, double Ki, double Kd, double Kf, PIDSource source,
                        PIDOutput output) {
-    this(Kp, Ki, Kd, Kf, source, output, kDefaultPeriod);
+    this(Kp, Ki, Kd, Kf, source, output, kDefaultPeriod, null);
   }
 
   /**
@@ -247,7 +252,11 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   protected void calculate() {
     boolean enabled;
     PIDSource pidInput;
-
+    double pterm = 0;
+    double iterm = 0;
+    double dterm = 0;
+    double fterm = 0;
+    
     synchronized (this) {
       if (m_pidInput == null) {
         return;
@@ -281,9 +290,10 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
             } else {
               m_totalError = m_maximumOutput / m_P;
             }
-
-            m_result = m_P * m_totalError + m_D * m_error
-                + calculateFeedForward();
+            pterm = m_P * m_error;
+            dterm = m_D*(m_error - m_prevError);
+            fterm = calculateFeedForward();
+            m_result = pterm + dterm + fterm;
           }
         } else {
           if (m_I != 0) {
@@ -298,9 +308,11 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
               m_totalError = m_maximumOutput / m_I;
             }
           }
-
-          m_result = m_P * m_error + m_I * m_totalError
-              + m_D * (m_error - m_prevError) + calculateFeedForward();
+          pterm = m_P * m_error;
+          iterm = m_I * m_totalError;
+          dterm = m_D*(m_error - m_prevError);
+          fterm = calculateFeedForward();
+          m_result = pterm + iterm + dterm + fterm;
         }
         m_prevError = m_error;
 
@@ -322,6 +334,10 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
       }
 
       pidOutput.pidWrite(result);
+      //System.out.println("Timer.getFPGATimestamp()" + ", " + input + ", " + m_error + ", " + m_totalError + 
+	  //", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
+		  //m_log.write("Timer.getFPGATimestamp()" + ", " + input + ", " + m_error + ", " + m_totalError + 
+				 // ", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
     }
   }
 
@@ -664,6 +680,8 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @Override
   public synchronized void enable() {
     m_enabled = true;
+    //m_log.open(m_file, "Fred");
+   // m_log.open(m_file, "Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Setpoint\n");
 
     if (m_table != null) {
       m_table.putBoolean("enabled", true);
@@ -740,7 +758,6 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   };
   private ITable m_table;
 
-  @Override
   public void initTable(ITable table) {
     if (this.m_table != null) {
       m_table.removeTableListener(m_listener);
@@ -778,7 +795,6 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
     return error;
   }
 
-  @Override
   public ITable getTable() {
     return m_table;
   }
@@ -798,4 +814,10 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @Override
   public void stopLiveWindowMode() {
   }
+
+@Override
+public void initTable(NetworkTable subtable) {
+	// TODO Auto-generated method stub
+	
+}
 }
