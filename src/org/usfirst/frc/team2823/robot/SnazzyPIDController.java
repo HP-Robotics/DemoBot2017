@@ -68,7 +68,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   Timer m_setpointTimer;
   private boolean m_freed = false;
   private boolean m_usingPercentTolerance;
-  private SnazzyLog m_log;
+  private SnazzyLog m_log = new SnazzyLog();
   private String m_file = null;
 
   /**
@@ -680,8 +680,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @Override
   public synchronized void enable() {
     m_enabled = true;
-    //m_log.open(m_file, "Fred");
-   // m_log.open(m_file, "Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Setpoint\n");
+    m_log.open(m_file, "Timestamp, Input, Error, Accumulated Error, Calculated Output, P: " + m_P + ", I: " + m_I +  ", D: " + m_D + ", F: " + m_F + ", Setpoint\n");
 
     if (m_table != null) {
       m_table.putBoolean("enabled", true);

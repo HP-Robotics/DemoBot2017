@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.TimerTask;
 import java.util.LinkedList;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -1013,7 +1014,6 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   };
   private ITable table;
 
-  @Override
   public void initTable(ITable table) {
     if (this.table != null)
       this.table.removeTableListener(listener);
@@ -1079,7 +1079,6 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
   /**
    * {@inheritDoc}
    */
-  @Override
   public ITable getTable() {
     return table;
   }
@@ -1103,6 +1102,12 @@ public class AdvancedPIDController implements PIDInterface, LiveWindowSendable {
    */
   @Override
   public void stopLiveWindowMode() {}
+
+@Override
+public void initTable(NetworkTable subtable) {
+	// TODO Auto-generated method stub
+	
+}
 
 }
 
