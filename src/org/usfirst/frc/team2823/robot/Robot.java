@@ -224,15 +224,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic(){
 		if(joystick.getRawButton(1) && !toggle){
-			leftControl.setSetpoint(1000* IN_TO_ENC);
+			leftControl.setSetpoint(100* IN_TO_ENC);
 			leftControl.enable();
-			System.out.println(l.getDistance()*ENC_TO_IN);
-			//leftControl.enableLog("Left.csv");
+			//leftControl.enableLog("LeftOld.csv");
 			
-			rightControl.setSetpoint(1000 * IN_TO_ENC);
+			rightControl.setSetpoint(100 * IN_TO_ENC);
 			rightControl.enable();
-			System.out.println(r.getDistance()*ENC_TO_IN);
-			//rightControl.enableLog("Right.csv");
+			//rightControl.enableLog("RightOld.csv");
 			
 			toggle = true;
 			

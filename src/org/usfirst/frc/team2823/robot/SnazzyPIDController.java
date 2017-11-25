@@ -334,10 +334,9 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
       }
 
       pidOutput.pidWrite(result);
-      //System.out.println("Timer.getFPGATimestamp()" + ", " + input + ", " + m_error + ", " + m_totalError + 
-	  //", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
-		  //m_log.write("Timer.getFPGATimestamp()" + ", " + input + ", " + m_error + ", " + m_totalError + 
-				 // ", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
+
+	  m_log.write(Timer.getFPGATimestamp() + ", " + input + ", " + m_error + ", " + m_totalError + 
+				  ", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
     }
   }
 
