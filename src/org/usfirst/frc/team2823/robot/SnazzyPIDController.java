@@ -723,6 +723,7 @@ public class SnazzyPIDController implements PIDInterface, LiveWindowSendable {
   @Override
   public synchronized void reset() {
     disable();
+    m_log.reset();
     m_prevError = 0;
     m_totalError = 0;
     m_result = 0;
