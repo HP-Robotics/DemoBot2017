@@ -52,8 +52,8 @@ public class Robot extends IterativeRobot {
 	
 	Joystick joystick;
 	
-	SnazzyPIDController dControl;
-	SnazzyPIDController rControl; 
+	SnazzyPIDCalculator dControl;
+	SnazzyPIDCalculator rControl; 
 	SnazzyPIDController leftControl;
 	SnazzyPIDController rightControl;
 	
@@ -91,8 +91,8 @@ public class Robot extends IterativeRobot {
 		daPotatoSource = new AverageEncoderSource(this, l, r);
 		daGSource = new ADXRS450_Gyro();
 		
-		dControl = new SnazzyPIDController(0, 0, 0, daPotatoSource, dOutput, 0.01);
-		rControl = new SnazzyPIDController(0, 0, 0, daGSource, rOutput, 0.01);
+		dControl = new SnazzyPIDCalculator(0, 0, 0, daPotatoSource, dOutput, 0.01);
+		rControl = new SnazzyPIDCalculator(0, 0, 0, daGSource, rOutput, 0.01);
 		leftControl = new SnazzyPIDController(1, 0, 0, 0, l, tLeft, 0.01, "Left.csv");
 		rightControl = new SnazzyPIDController(1, 0, 0, 0, r, new InvertedPIDOutput(tRight), 0.01,"Right.csv");
 		
