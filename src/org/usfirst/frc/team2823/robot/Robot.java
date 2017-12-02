@@ -93,8 +93,8 @@ public class Robot extends IterativeRobot {
 		
 		dControl = new SnazzyPIDCalculator(0, 0, 0, daPotatoSource, dOutput, 0.01);
 		rControl = new SnazzyPIDCalculator(0, 0, 0, daGSource, rOutput, 0.01);
-		leftControl = new SnazzyMotionPlanner(1, 0, 0, 0, l, tLeft, 0.01, "Left.csv");
-		rightControl = new SnazzyMotionPlanner(1, 0, 0, 0, r, new InvertedPIDOutput(tRight), 0.01,"Right.csv");
+		leftControl = new SnazzyMotionPlanner(1, 0, 0, 0, 0.00003, 0.0001, l, tLeft, 0.01, "Left.csv");
+		rightControl = new SnazzyMotionPlanner(1, 0, 0, 0, 0.00003, 0.0001, r, new InvertedPIDOutput(tRight), 0.01,"Right.csv");
 		
 		//table = NetworkTable.getTable("GRIP/myContoursReport");
 		
@@ -229,13 +229,13 @@ public class Robot extends IterativeRobot {
 		
 		if(joystick.getRawButton(1) && !toggle){
 			leftControl.setSetpoint(100* IN_TO_ENC);
+			leftControl.configureGoal(100*IN_TO_ENC, 9000, 30000, true);
 			leftControl.enable();
-			leftControl.startCalibration();
 			//leftControl.enableLog("LeftOld.csv");
 			
 			rightControl.setSetpoint(100 * IN_TO_ENC);
+			rightControl.configureGoal(100*IN_TO_ENC, 9000, 30000, true);
 			rightControl.enable();
-			rightControl.startCalibration();
 			//rightControl.enableLog("RightOld.csv");
 			
 			toggle = true;
