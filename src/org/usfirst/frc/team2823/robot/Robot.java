@@ -223,6 +223,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic(){
+
+		leftControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
+		rightControl.setPID(SmartDashboard.getNumber("P", 0), SmartDashboard.getNumber("I", 0), SmartDashboard.getNumber("D", 0));
+		
 		if(joystick.getRawButton(1) && !toggle){
 			leftControl.setSetpoint(100* IN_TO_ENC);
 			leftControl.enable();
