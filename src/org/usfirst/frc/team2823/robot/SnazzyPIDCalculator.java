@@ -60,7 +60,7 @@ public class SnazzyPIDCalculator implements PIDInterface, LiveWindowSendable {
   private double m_setpoint = 0.0;
   private double m_prevSetpoint = 0.0;
   private double m_error = 0.0;
-  private double m_result = 0.0;
+  protected double m_result = 0.0;
   private double m_period = kDefaultPeriod;
   protected PIDSource m_pidInput;
   protected PIDOutput m_pidOutput;
@@ -304,8 +304,7 @@ public class SnazzyPIDCalculator implements PIDInterface, LiveWindowSendable {
         } else if (m_result < m_minimumOutput) {
           m_result = m_minimumOutput;
         }
-        pidOutput = m_pidOutput;
-        result = m_result;
+    
 
         // Update the buffer.
         m_buf.add(m_error);
@@ -316,10 +315,10 @@ public class SnazzyPIDCalculator implements PIDInterface, LiveWindowSendable {
         }
       }
 
-      pidOutput.pidWrite(result);
+      
 
 	  m_log.write(Timer.getFPGATimestamp() + ", " + input + ", " + m_error + ", " + m_totalError + 
-				  ", " + result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
+				  ", " + m_result + ", " + pterm + ", " + iterm + ", " + dterm + ", " + fterm + ", " + m_setpoint + "\n");
     }
   }
 

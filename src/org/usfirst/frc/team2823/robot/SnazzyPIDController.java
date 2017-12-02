@@ -37,6 +37,12 @@ public class SnazzyPIDController extends SnazzyPIDCalculator {
 		    @Override
 		    public void run() {
 		      m_controller.calculate();
+		      
+		      synchronized(this) {
+		    	  if(isEnabled()) {
+		    		  m_pidOutput.pidWrite(m_result);
+		    	  }
+		      }
 		    }
 		  }
 }
