@@ -69,7 +69,7 @@ public class SnazzyPIDCalculator implements PIDInterface, LiveWindowSendable {
   private boolean m_freed = false;
   private boolean m_usingPercentTolerance;
   private SnazzyLog m_log = new SnazzyLog();
-  private String m_file = null;
+  protected String m_file = null;
 
   /**
    * Tolerance is the type of tolerance used to specify if the PID controller is on target.
