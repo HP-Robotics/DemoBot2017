@@ -28,6 +28,7 @@ public class SnazzyMotionPlanner extends SnazzyPIDCalculator {
 	private double  m_positionAtEndOfCruise;
 	private double  m_timeAtEndOfCruise;
 	private double m_initTime;
+	private double m_initPos;
 	
 	private double m_kA;
 	private double m_kV;
@@ -53,6 +54,7 @@ public class SnazzyMotionPlanner extends SnazzyPIDCalculator {
 		m_planFinished = false;
 		m_dwell = dwell;
 		m_initTime = Timer.getFPGATimestamp();
+		m_initPos = m_pidInput.pidGet();
 
 		//check if goal is negative
 		if(goal < 0) {
@@ -168,7 +170,8 @@ public class SnazzyMotionPlanner extends SnazzyPIDCalculator {
 	}
 	public void startCalibration() {
 		m_calibrating = true;
-		m_calStart = Timer.getFPGATimestamp();
+		m_lastCal = m_calStart = Timer.getFPGATimestamp();
+		m_lastDist = m_pidInput.pidGet();
 
 	}
 	public void stopCalibration() {
@@ -192,7 +195,7 @@ public class SnazzyMotionPlanner extends SnazzyPIDCalculator {
 				}
 			}
 		} else {
-			setSetpoint(m_currentWaypoint.m_position);
+			setSetpoint(m_currentWaypoint.m_position + m_initPos);
 		}
 		calculate();
 
